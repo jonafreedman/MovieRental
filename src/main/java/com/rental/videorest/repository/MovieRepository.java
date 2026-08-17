@@ -1,5 +1,5 @@
 /**
- * Repository interface providing database operations and custom searches for the Movie entity.
+ * Spring Data JPA repository for executing data operations and searches on Movie entities.
  */
 package com.rental.videorest.repository;
 
@@ -9,9 +9,19 @@ import java.util.List;
 
 public interface MovieRepository extends JpaRepository<Movie, Long> {
     
-    // Custom query: Finds movies that match a category (e.g., "Sci-Fi")
+	/**
+     * Retrieves catalog movies belonging to a specified genre category string.
+     *
+     * @param category exact category name filter (e.g., "Sci-Fi")
+     * @return list of matching Movie entities
+     */
     List<Movie> findByCategory(String category);
     
-    // Custom query: Text-based search that ignores capital letters (e.g., searching "matrix" finds "The Matrix")
+    /**
+     * Executes case-insensitive SQL LIKE search querying movie titles containing substring text
+     *
+     * @param keyword title substring search term
+     * @return list of matching Movie entities
+     */
     List<Movie> findByTitleContainingIgnoreCase(String keyword);
 }

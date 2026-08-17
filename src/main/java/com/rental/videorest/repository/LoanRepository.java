@@ -1,5 +1,5 @@
 /**
- * Repository interface providing database operations and tracking tools for rental Loans.
+ * Spring Data JPA repository for executing data operations on Loan entities.
  */
 package com.rental.videorest.repository;
 
@@ -9,9 +9,18 @@ import java.util.List;
 
 public interface LoanRepository extends JpaRepository<Loan, Long> {
     
-    // Custom query: Find all loans belonging to a specific user id (for Screen 4: User History)
+	/**
+     * Retrieves all loan transactions created by a specific user account ID.
+     *
+     * @param userId unique identifier of the user account
+     * @return list of matching Loan records
+     */
     List<Loan> findByUserId(Long userId);
     
-    // Custom query: Find all active loans across the store where return_date IS NULL (for Screen 5: Admin Tracker)
+    /**
+     * Spring Derived Query that automatically translates 'ReturnDateIsNull' into SQL 'WHERE return_date IS NULL'
+     *
+     * @return list of active outstanding loans currently in customer possession
+     */
     List<Loan> findByReturnDateIsNull();
 }

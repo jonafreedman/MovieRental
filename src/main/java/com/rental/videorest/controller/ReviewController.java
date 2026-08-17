@@ -1,5 +1,5 @@
 /**
- * REST Controller managing user-submitted community ratings and comments.
+ * REST controller providing endpoints to submit ratings and read movie reviews.
  */
 package com.rental.videorest.controller;
 
@@ -18,13 +18,23 @@ public class ReviewController {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    // 1. Get all customer feedback submitted against a single title (Screen 3)
+    /**
+     * Retrieves all user feedback comments and rating scores recorded against a specific movie title.
+     *
+     * @param movieId target movie identifier
+     * @return list of Review instances associated with the given movie
+     */
     @GetMapping("/movie/{movieId}")
     public List<Review> getMovieReviews(@PathVariable Long movieId) {
         return reviewRepository.findByMovieId(movieId);
     }
 
-    // 2. Submit a new written review & score rating (Screen 3)
+    /**
+     * Stores a new user review submission in the database.
+     *
+     * @param review review object populated from request JSON body
+     * @return the saved Review entity
+     */
     @PostMapping
     public Review submitReview(@RequestBody Review review) {
         return reviewRepository.save(review);

@@ -1,5 +1,5 @@
 /**
- * REST Controller handling API requests for registration and login authentication.
+ * REST controller handling customer account registration and login authentication requests.
  */
 package com.rental.videorest.controller;
 
@@ -20,7 +20,12 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    // 1. User Registration (Screen 1)
+    /**
+     * Creates a new user account if the requested username isn't already taken.
+     *
+     * @param user prospective user entity populated from request body
+     * @return 200 OK with user object on success, or 400 BAD REQUEST if username exists
+     */
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
@@ -29,7 +34,12 @@ public class UserController {
         return ResponseEntity.ok(userRepository.save(user));
     }
 
-    // 2. Simple User Authentication/Login (Screen 1)
+    /**
+     * Authenticates login credentials against stored user account details.
+     *
+     * @param loginDetails credentials object containing username and password
+     * @return 200 OK with User payload on valid credentials, or 401 UNAUTHORIZED on error
+     */
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody User loginDetails) {
         Optional<User> userOpt = userRepository.findByUsername(loginDetails.getUsername());

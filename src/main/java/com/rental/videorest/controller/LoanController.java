@@ -1,5 +1,5 @@
 /**
- * REST Controller enforcing core business rule tracking for checking out and returning rentals.
+ * REST controller managing rental checkouts, returns, and historical user transaction logs.
  */
 package com.rental.videorest.controller;
 
@@ -29,7 +29,13 @@ public class LoanController {
     @Autowired
     private UserRepository userRepository;
 
-    // 1. Rent a DVD (Screen 3)
+    /**
+     * Processes a new movie rental request by validating stock availability and generating a loan record.
+     *
+     * @param userId primary key ID of the customer requesting the rental
+     * @param movieModifierId primary key ID of the requested movie title
+     * @return 200 OK with Loan payload on success, 404 NOT FOUND if user/movie doesn't exist, or 400 BAD REQUEST if out of stock
+     */
     @PostMapping("/rent")
     public ResponseEntity<?> rentMovie(@RequestParam Long userId, @RequestParam Long movieModifierId) {
         Movie movie = movieRepository.findById(movieModifierId).orElse(null);
@@ -52,7 +58,12 @@ public class LoanController {
         return ResponseEntity.ok(loanRepository.save(dynamicLoan));
     }
 
-    // 2. Return a DVD (Screen 5: Admin Dash)
+    /**
+     * Processes a DVD return transaction, closing the loan duration and incrementing remaining stock.
+     *
+     * @param loanId unique identifier of the target active loan record
+     * @return 200 OK with updated Loan details, 404 NOT FOUND if missing, or 400 BAD REQUEST if already returned
+     */
     @PutMapping("/return/{loanId}")
     public ResponseEntity<?> returnMovie(@PathVariable Long loanId) {
         Loan loan = loanRepository.findById(loanId).orElse(null);
@@ -75,13 +86,22 @@ public class LoanController {
         return ResponseEntity.ok(loanRepository.save(loan));
     }
 
-    // 3. User Personal Logs (Screen 4)
+    /**
+     * Retrieves all past and present rental transactions linked to a specific user account.
+     *
+     * @param userId unique identifier of the user
+     * @return list of matching Loan records
+     */
     @GetMapping("/user/{userId}")
     public List<Loan> getUserLogs(@PathVariable Long userId) {
         return loanRepository.findByUserId(userId);
     }
 
-    // 4. Admin Global Live Tracking Dashboard Monitor (Screen 5)
+    /**
+     * Retrieves all active loans across the store network that haven't been returned yet.
+     *
+     * @return list of current outstanding Loan records
+     */
     @GetMapping("/active")
     public List<Loan> getActiveLoans() {
         return loanRepository.findByReturnDateIsNull();

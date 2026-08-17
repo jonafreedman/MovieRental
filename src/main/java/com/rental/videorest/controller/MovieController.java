@@ -1,5 +1,5 @@
 /**
- * REST Controller providing API endpoints for browsing, searching, and managing the movie catalog.
+ * REST controller handling catalog discovery, genre filtering, keyword searches, and movie creation.
  */
 package com.rental.videorest.controller;
 
@@ -19,7 +19,12 @@ public class MovieController {
     @Autowired
     private MovieRepository movieRepository;
 
-    // 1. Get all movies OR filter by category (Wrapped in ResponseEntity)
+    /**
+     * Fetches all registered movies in the catalog, optionally filtered by category genre.
+     *
+     * @param category optional genre string filter (e.g., "Sci-Fi")
+     * @return 200 OK containing the list of matching Movie entities
+     */
     @GetMapping
     public ResponseEntity<List<Movie>> getAllMovies(@RequestParam(required = false) String category) {
         if (category != null && !category.isEmpty()) {
@@ -28,13 +33,23 @@ public class MovieController {
         return ResponseEntity.ok(movieRepository.findAll());
     }
 
-    // 2. Search movies by keyword title (Wrapped in ResponseEntity)
+    /**
+     * Searches for movies whose title contains the given keyword substring case-insensitively.
+     *
+     * @param keyword title substring query
+     * @return 200 OK containing matched Movie entities
+     */
     @GetMapping("/search")
     public ResponseEntity<List<Movie>> searchMovies(@RequestParam String keyword) {
         return ResponseEntity.ok(movieRepository.findByTitleContainingIgnoreCase(keyword));
     }
 
-    // 3. Add a new movie title (Wrapped in ResponseEntity)
+    /**
+     * Registers a new movie entry into the catalog and sets initial available copies equal to total copies.
+     *
+     * @param movie movie entity populated from request JSON body
+     * @return 200 OK containing the persisted Movie entity
+     */
     @PostMapping
     public ResponseEntity<Movie> addMovie(@RequestBody Movie movie) {
         movie.setAvailableCopies(movie.getTotalCopies());

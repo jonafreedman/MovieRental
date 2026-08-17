@@ -1,5 +1,5 @@
 /**
- * Repository interface providing database operations for the User entity.
+ * Spring Data JPA repository for managing User entity accounts and lookup authentication queries.
  */
 package com.rental.videorest.repository;
 
@@ -9,6 +9,11 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     
-    // Custom query: Spring automatically figures out how to find a user by their username
+	/**
+     * Looks up a user account record matching the provided unique username.
+     *
+     * @param username username key string
+     * @return an Optional containing the matched User entity if found
+     */
     Optional<User> findByUsername(String username);
 }

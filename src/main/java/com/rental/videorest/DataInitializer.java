@@ -1,6 +1,5 @@
 /**
- * Component class that automatically populates the database with sample movies 
- * and user accounts upon server startup for testing purposes.
+ * Database startup component that populates initial inventory stock and default user accounts.
  */
 package com.rental.videorest;
 
@@ -17,12 +16,23 @@ public class DataInitializer implements CommandLineRunner {
     private final MovieRepository movieRepository;
     private final UserRepository userRepository;
 
-    // Spring automatically injects the repositories here
+    /**
+     * Constructs the initializer with required repository dependencies.
+     * 
+     * @param movieRepository repository for executing movie persistence
+     * @param userRepository repository for executing user persistence
+     */
     public DataInitializer(MovieRepository movieRepository, UserRepository userRepository) {
         this.movieRepository = movieRepository;
         this.userRepository = userRepository;
     }
 
+    /**
+     * Executes seed logic immediately after the Spring Boot application context is fully loaded.
+     *
+     * @param args command-line arguments passed to the application
+     * @throws Exception if database seeding fails
+     */
     @Override
     public void run(String... args) throws Exception {
         // 1. Only seed data if the database is currently empty
