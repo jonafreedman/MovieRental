@@ -52,7 +52,9 @@ public class MovieController {
      */
     @PostMapping
     public ResponseEntity<Movie> addMovie(@RequestBody Movie movie) {
-        movie.setAvailableCopies(movie.getTotalCopies());
+        if (movie.getAvailableCopies() <= 0) {
+            movie.setAvailableCopies(movie.getTotalCopies());
+        }
         return ResponseEntity.ok(movieRepository.save(movie));
     }
 }
