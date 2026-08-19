@@ -22,6 +22,7 @@ public class UserController {
 
     /**
      * Creates a new user account if the requested username isn't already taken.
+     * Sets default role to "USER" if not provided.
      *
      * @param user prospective user entity populated from request body
      * @return 200 OK with user object on success, or 400 BAD REQUEST if username exists
@@ -31,6 +32,12 @@ public class UserController {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists!");
         }
+
+        // Default to standard customer role if missing
+        if (user.getRole() == null || user.getRole().trim().isEmpty()) {
+            user.setRole("USER");
+        }
+
         return ResponseEntity.ok(userRepository.save(user));
     }
 
